@@ -1,0 +1,18 @@
+data:
+  a: 1.0
+  b: 1.0
+  sigma: 0.1
+  num_samples: 120
+
+
+split:
+  tr_ratio: 0.333333
+  va_ratio: 0.333333
+
+
+model:
+  thT_bound:
+  - [0.0, 2.0] # a
+  - [-3.142, 3.142] # c
+  fD:
+    sizes_hidden_layers: [16, 16]

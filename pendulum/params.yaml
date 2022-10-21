@@ -1,0 +1,60 @@
+data:
+  url: https://github.com/Stable-Baselines-Team/stable-baselines/raw/master/stable_baselines/gail/dataset/expert_pendulum.npz
+
+
+split:
+  tr_ratio: 0.4
+  va_ratio: 0.3
+  num_steps_x: &NUM_STEPS_X 1 # 1 is enough because the pendulum-env's param is fixed (and thus not needs to be inferred by encoder)
+  num_steps_y: &NUM_STEPS_Y 10
+  # x starts at t=j, y starts at t=j+nsx (=j+1 if nsx=1)
+  stride: 1
+
+
+model:
+  num_steps_x: *NUM_STEPS_X
+  num_steps_y: *NUM_STEPS_Y
+  thT_bound: &THT_BOUND
+  - [8.0, 12.0] # g
+  fD:
+    sizes_hidden_layers: [128, 128, 128]
+  odeint:
+    dt: 0.05 # default value of PendulumEnv in gym/envs/classic_control/pendulum.py
+    method: 'rk4'
+    rk4:
+      step_size: 0.05
+
+
+# train:
+#   batch_size: 50
+#   max_epochs: 500
+#   learning_rate:
+#   - 1.0e-3 # start
+#   - 1.0e-5 # end
+#   weight_decay: 0.01
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   valid_interval_epochs: 5
+#   device: 'cuda:0'
+#   coeff_R: 1.0e-2
+#   adaptive:
+#       num_thT_samples_per_x: 1
+#   maml: &MAML
+#     inner_num_iters: 5
+#     inner_learning_rate: 1.0e-2
+#     inner_grad_clip_value: 999999
+
+
+# predict:
+#   batch_size: 999999
+#   max_epochs: 1000
+#   learning_rate:
+#   - 1.0e-3 # start
+#   - 1.0e-5 # end
+#   weight_decay: 0
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   device: 'cuda:0'
+#   transductive:
+#     coeff_R: 1.0e-2
+#   maml: *MAML

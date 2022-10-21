@@ -1,0 +1,79 @@
+data:
+  a_range: [0.0015, 0.0015] #[0.001, 0.002]
+  b_range: [0.005, 0.005] #[0.003, 0.007]
+  k: 0.005
+  sigma: 0
+  field_size: &FIELD_SIZE 32 # both for X and Y
+  mesh_step: &MESH_STEP 0.06451612903 # 2/31
+  t_span: [0.0, 1.5]
+  len_sequence: 16
+  num_episodes: 1000
+  device: 'cuda:0'
+
+
+split:
+  tr_ratio: 0.4
+  va_ratio: 0.3
+  dispose_first_steps: 0
+  num_steps_x: &NUM_STEPS_X 1
+  num_steps_y: &NUM_STEPS_Y 15
+  # x starts at t=j, y starts at t=j+1
+  stride: 99999
+
+
+model:
+  field_size: *FIELD_SIZE
+  num_steps_x: *NUM_STEPS_X
+  num_steps_y: *NUM_STEPS_Y
+  thT_bound:
+  - [0.001, 0.002] # a
+  - [0.001, 0.01] # b
+  batchnorm:
+    use_batchnorm: True
+    track_running_stats: False
+  fD:
+    sizes_hidden_layers: [128, 128] # for mlp
+    nums_hidden_channels: [16, 16] # for conv
+  thT_encoder:
+    nums_hidden_channels: [16, 16]
+  odeint:
+    dt: 0.1 # should be set in accordance with data.tspan & data.len_sequence
+    mesh_step: *MESH_STEP
+    method: 'rk4'
+    rk4:
+      step_size: 0.1
+
+
+# train:
+#   batch_size: 20
+#   max_epochs: 500
+#   learning_rate: 1.0e-3
+#   weight_decay: 0.01
+#   adam_beta1: 0.9
+#   adam_beta2: 0.999
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   valid_interval_epochs: 5
+#   device: 'cuda:0'
+#   coeff_R: 1.0e-6
+#   adaptive:
+#     num_thT_samples_per_x: 1
+#   maml: &MAML
+#     inner_num_iters: 5
+#     inner_learning_rate: 1.0e-2
+#     inner_grad_clip_value: 999999
+
+
+# predict:
+#   batch_size: 500
+#   max_epochs: 5
+#   learning_rate: 1.0e-5
+#   weight_decay: 0
+#   adam_beta1: 0.9
+#   adam_beta2: 0.999
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   device: 'cuda:0'
+#   transductive:
+#     coeff_R: 1.0e-6
+#   maml: *MAML

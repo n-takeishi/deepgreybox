@@ -1,0 +1,72 @@
+data:
+  url: https://figshare.com/ndownloader/articles/10045976/versions/1
+  # https://doi.org/10.6084/m9.figshare.10045976.v1
+  normalize_coeff:
+  - 0.5
+  - 0.02
+
+split:
+  exclude_tables: [7,]
+  max_value: 5.0 # subsequences w/ values larger than this will be threw away
+  tr_ratio: 0.9
+  va_ratio: 0.05
+  num_steps_x: &NUM_STEPS_X 11
+  num_steps_y: &NUM_STEPS_Y 10 # autoencoding
+  # x starts at t=j, y starts at t=j+1 (and not j+nsx)
+  stride: 1
+
+
+model:
+  num_steps_x: *NUM_STEPS_X
+  num_steps_y: *NUM_STEPS_Y
+  thT_bound: &THT_BOUND
+  - [0.0, 1.5] # b: prey's growth rate w/o interaction (alpha)
+  - [0.0, 1.5] # d: predator's decay rate w/o interaction (gamma)
+  - [0.0, 3.0] # p: prey's decay rate by predation (beta)
+  - [0.0, 3.0] # r: predator's growth rate by predation (delta)
+  fD:
+    sizes_hidden_layers: [128, 128, 128]
+  zD_encoder:
+    sizes_hidden_layers: [128, 128, 128]
+    dim_out: 16
+  thT_encoder:
+    sizes_hidden_layers: [128, 128, 128]
+  depth_t_embed: 4
+  odeint:
+    suppress_grad: False
+    max_state_value: 20.0 # to prevent nan
+    dt: 1.0
+    method: 'rk4'
+    euler:
+      step_size: 1.0
+
+
+# train:
+#   batch_size: 100
+#   max_epochs: 500
+#   learning_rate: 1.0e-3
+#   weight_decay: 0.01
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   valid_interval_epochs: 5
+#   device: 'cuda:0'
+#   coeff_R: 1.0e-3
+#   adaptive:
+#       num_thT_samples_per_x: 1
+#   maml: &MAML
+#     inner_num_iters: 5
+#     inner_learning_rate: 1.0e-2
+#     inner_grad_clip_value: 999999
+
+
+# predict:
+#   batch_size: 100
+#   max_epochs: 50
+#   learning_rate: 1.0e-4
+#   weight_decay: 0
+#   grad_clip_value: 1.0
+#   grad_clip_norm: 10.0
+#   device: 'cuda:0'
+#   transductive:
+#     coeff_R: 1.0e-3
+#   maml: *MAML
