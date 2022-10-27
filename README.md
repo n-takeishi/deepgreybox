@@ -1,4 +1,6 @@
-# Codes for "Deep Grey-Box Models With Adaptive Data-Driven Models Toward Trustworthy Estimation of Theory-Driven Models"
+# Codes for "Deep Grey-Box Modeling With Adaptive Data-Driven Models Toward Trustworthy Estimation of Theory-Driven Models"
+
+Takeishi and Kalousis, [Deep Grey-Box Modeling With Adaptive Data-Driven Models Toward Trustworthy Estimation of Theory-Driven Models](https://arxiv.org/abs/2210.13103), arXiv:2210.13103.
 
 ## Experiments
 
